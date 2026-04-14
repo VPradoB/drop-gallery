@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_engram_engram__mem_search",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//home/vprado/Work/drops-gallery/**)",
+      "Bash(done)",
+      "mcp__plugin_engram_engram__mem_save",
+      "mcp__plugin_engram_engram__mem_get_observation"
+    ]
+  }
+}

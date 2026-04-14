@@ -1,0 +1,34 @@
+---
+import type { Creator, Image } from '../lib/types';
+import CreatorCard from './CreatorCard.astro';
+
+interface Props {
+  creators: Creator[];
+  imagesByCreator: Record<string, Image[]>;
+}
+const { creators, imagesByCreator } = Astro.props;
+---
+{creators.length === 0 ? (
+  <p class="error">No creators yet.</p>
+) : (
+  <div class="creator-grid">
+    {creators.map((creator) => (
+      <CreatorCard creator={creator} previewImages={imagesByCreator[creator.id] ?? []} />
+    ))}
+  </div>
+)}
+
+<style>
+  .creator-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+
+  @media (max-width: 480px) {
+    .creator-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

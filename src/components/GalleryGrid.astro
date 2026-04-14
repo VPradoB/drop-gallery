@@ -1,0 +1,61 @@
+---
+import type { Image, Creator } from '../lib/types';
+
+interface Props {
+  images: Image[];
+  creator: Creator;
+}
+const { images, creator } = Astro.props;
+---
+{images.length === 0 ? (
+  <p class="error">No images yet.</p>
+) : (
+  <div class="gallery-grid">
+    {images.map((img) => (
+      <div class="gallery-item">
+        <a href={img.file} target="_blank" rel="noopener noreferrer">
+          <img
+            src={img.file}
+            alt={img.alt}
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
+      </div>
+    ))}
+  </div>
+)}
+
+<style>
+  .gallery-grid {
+    columns: 1;
+    gap: var(--gap);
+  }
+
+  @media (min-width: 640px) {
+    .gallery-grid {
+      columns: 2;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .gallery-grid {
+      columns: 3;
+    }
+  }
+
+  .gallery-item {
+    break-inside: avoid;
+    margin-bottom: var(--gap);
+  }
+
+  .gallery-item img {
+    width: 100%;
+    border-radius: var(--radius);
+    transition: opacity 0.15s ease;
+  }
+
+  .gallery-item a:hover img {
+    opacity: 0.85;
+  }
+</style>

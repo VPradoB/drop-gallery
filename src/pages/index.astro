@@ -1,0 +1,219 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CreatorGrid from '../components/CreatorGrid.astro';
+import { getCreators, getAllImages } from '../lib/pocketbase';
+import type { Image } from '../lib/types';
+
+let creators: import('../lib/types').Creator[] = [];
+let imagesByCreator: Record<string, Image[]> = {};
+let error = false;
+
+try {
+  const [creatorsData, allImages] = await Promise.all([getCreators(), getAllImages()]);
+  creators = creatorsData;
+  for (const img of allImages) {
+    if (!imagesByCreator[img.creator]) imagesByCreator[img.creator] = [];
+    imagesByCreator[img.creator]!.push(img);
+  }
+} catch (e) {
+  console.error('[index] Failed to fetch data:', e);
+  Astro.response.status = 503;
+  error = true;
+}
+---
+<BaseLayout title="drops gallery">
+  
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">Exclusive Content</div>
+      <h1 class="hero-title">
+        <span class="title-line">Discover</span>
+        <span class="title-line accent">Premium Creators</span>
+      </h1>
+      <p class="hero-subtitle">
+        Curated galleries from the most talented content creators. 
+        Direct access to exclusive visual content.
+      </p>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-value">{creators.length}+</span>
+          <span class="stat-label">Creators</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value">24/7</span>
+          <span class="stat-label">Access</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value">HD</span>
+          <span class="stat-label">Quality</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-glow"></div>
+    <div class="hero-grid-pattern"></div>
+  </section>
+
+  <main>
+    <div class="section-header">
+      <h2 class="section-title">Featured Creators</h2>
+      <p class="section-subtitle">Explore the latest drops from our community</p>
+    </div>
+    
+    {error
+      ? <p class="error">Gallery unavailable — try again later.</p>
+      : <CreatorGrid creators={creators} imagesByCreator={imagesByCreator} />
+    }
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 DropsGallery. All rights reserved.</p>
+  </footer>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    padding: 4rem var(--gap) 6rem;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background: linear-gradient(135deg, rgba(255, 45, 106, 0.15), rgba(157, 0, 255, 0.1));
+    border: 1px solid rgba(255, 45, 106, 0.3);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 10vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: 0.04em;
+    margin-bottom: 1.5rem;
+  }
+
+  .title-line {
+    display: block;
+    color: var(--text);
+  }
+
+  .title-line.accent {
+    color: var(--accent);
+    text-shadow: 0 0 60px var(--accent-glow);
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+
+  .hero-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--surface-hover), transparent);
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 400px;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, var(--accent-glow) 0%, transparent 60%);
+    opacity: 0.3;
+    pointer-events: none;
+    animation: pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.05); }
+  }
+
+  .hero-grid-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255, 45, 106, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 45, 106, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black, transparent);
+    pointer-events: none;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .site-footer {
+    padding: 3rem var(--gap);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--surface);
+    margin-top: 4rem;
+  }
+</style>
