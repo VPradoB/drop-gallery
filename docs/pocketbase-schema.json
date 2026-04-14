@@ -8,6 +8,7 @@
       { "name": "bio", "type": "text", "required": true, "max": 160 },
       { "name": "avatar", "type": "file", "required": false, "maxSelect": 1, "mimeTypes": ["image/jpeg","image/png","image/webp","image/gif"], "maxSize": 5242880 },
       { "name": "externalUrl", "type": "url", "required": false },
+      { "name": "external_link", "type": "url", "required": false },
       { "name": "externalLabel", "type": "text", "required": false, "max": 40 },
       { "name": "active", "type": "bool", "required": false }
     ],
