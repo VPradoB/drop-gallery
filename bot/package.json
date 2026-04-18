@@ -1,0 +1,19 @@
+{
+  "name": "drops-gallery-bot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "sharp": "^0.33.4",
+    "telegraf": "^4.16.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,17 @@
+version: '3'
+services:
+  n8n:
+    image: n8nio/n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=YOUR_PASSWORD_HERE
+      - WEBHOOK_URL=http://YOUR_IP_HERE:5678
+
+volumes:
+  n8n_data:
